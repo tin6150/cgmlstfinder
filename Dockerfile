@@ -41,3 +41,4 @@ WORKDIR /workdir
 
 # Execute program when running the container
 ENTRYPOINT ["python3", "/usr/src/cgMLST.py"]
+
