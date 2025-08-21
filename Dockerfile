@@ -1,4 +1,5 @@
-FROM debian:stretch
+##FROM debian:stretch
+FROM debian:bullseye
 
 ENV DEBIAN_FRONTEND noninteractive
 
