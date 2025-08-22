@@ -25,7 +25,6 @@ RUN apt-get update -qq; \
     python3-pip \
 	prodigal \
     libz-dev \
-    six \
     ; \
     rm -rf /var/cache/apt/* /var/lib/apt/lists/*;
 
@@ -33,6 +32,7 @@ ENV DEBIAN_FRONTEND Teletype
 
 # Install python dependencies
 RUN pip3 install -U ete3 tabulate cgecore numpy;
+RUN pip3 install -U six;
 
 # Install kma
 RUN git clone --depth 1 https://bitbucket.org/genomicepidemiology/kma.git; \
