@@ -3,6 +3,8 @@ FROM debian:bullseye
 
 ENV DEBIAN_FRONTEND noninteractive
 
+## .github/workflow/publish__ghcr.yml WRONG dir, missed s. that that version was the actual push to ghcr.  FIX TBD ++
+
 ### RUN set -ex; \
 
 RUN echo  ''  ;\
@@ -39,6 +41,20 @@ RUN git clone --depth 1 https://bitbucket.org/genomicepidemiology/kma.git; \
 COPY cgMLST.py /usr/src/cgMLST.py
 
 RUN chmod 755 /usr/src/cgMLST.py;
+
+
+#Sn50
+ENV DBG_CONTAINER_VER  "Dockerfile 2025.0821 sn50"
+ENV DBG_DOCKERFILE Dockerfile
+
+RUN  cd / \
+  && touch _TOP_DIR_OF_CONTAINER_  \
+  && echo  "--------" >> _TOP_DIR_OF_CONTAINER_   \
+  && TZ=PST8PDT date  >> _TOP_DIR_OF_CONTAINER_   \
+  && uptime    | tee -a  _TOP_DIR_OF_CONTAINER_   \
+  && echo  $DBG_CONTAINER_VER   | tee -a  _TOP_DIR_OF_CONTAINER_   \
+  && echo  "Grand Finale for Dockerfile"
+
 
 
 ENV PATH $PATH:/usr/src
