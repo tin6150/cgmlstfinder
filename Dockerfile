@@ -1,8 +1,22 @@
-FROM debian:stretch
+##FROM debian:stretch
+FROM debian:bullseye
 
 ENV DEBIAN_FRONTEND noninteractive
 
+## .github/workflow/publish__ghcr.yml WRONG dir, missed s. that that version was the actual push to ghcr.  FIX TBD ++
+
 ### RUN set -ex; \
+
+RUN echo  ''  ;\
+    touch _TOP_DIR_OF_CONTAINER_  ;\
+    echo  'debian_bullseye'                  | tee -a _TOP_DIR_OF_CONTAINER_ ;\
+    echo "begining docker build process at " | tee -a _TOP_DIR_OF_CONTAINER_  ;\
+    date | tee -a       _TOP_DIR_OF_CONTAINER_ ;\
+    export TERM=dumb      ;\
+    export NO_COLOR=TRUE  ;\
+    cd /     ;\
+    echo "" 
+
 
 RUN apt-get update -qq; \
     apt-get install -y -qq git \
@@ -28,6 +42,21 @@ COPY cgMLST.py /usr/src/cgMLST.py
 
 RUN chmod 755 /usr/src/cgMLST.py;
 
+
+#Sn50
+ENV DBG_CONTAINER_VER  "Dockerfile 2025.0821 sn50"
+ENV DBG_DOCKERFILE Dockerfile
+
+RUN  cd / \
+  && touch _TOP_DIR_OF_CONTAINER_  \
+  && echo  "--------" >> _TOP_DIR_OF_CONTAINER_   \
+  && TZ=PST8PDT date  >> _TOP_DIR_OF_CONTAINER_   \
+  && uptime    | tee -a  _TOP_DIR_OF_CONTAINER_   \
+  && echo  $DBG_CONTAINER_VER   | tee -a  _TOP_DIR_OF_CONTAINER_   \
+  && echo  "Grand Finale for Dockerfile"
+
+
+
 ENV PATH $PATH:/usr/src
 # Setup .bashrc file for convenience during debugging
 RUN echo "alias ls='ls -h --color=tty'\n"\
@@ -41,3 +70,4 @@ WORKDIR /workdir
 
 # Execute program when running the container
 ENTRYPOINT ["python3", "/usr/src/cgMLST.py"]
+
