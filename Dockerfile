@@ -51,13 +51,13 @@ RUN chmod 755 /usr/src/cgMLST.py;
 RUN mkdir -p /opt/database    ;\
     cd       /opt/database    ;\
     echo "skip also, install on host... git clone https://bitbucket.org/genomicepidemiology/cgmlstfinder_db.git" | tee git_cgmlstfinder_db.TXT ;\
-    cd / ;\
-    ln -s /opt/database/cgmlstfinder_db /database ;\
-    cd /database         ;\
+    #cd / ;\
+    #ln -s /opt/database/cgmlstfinder_db /database ;\
+    #cd /database         ;\
     echo "skipped DB install python3 INSTALL.py"  | tee -a git_cgmlstfinder_db.TXT  ;\
     echo $?
 
-ENV DBG_CONTAINER_VER  "Dockerfile 2025.0821 sn50 skipDB"
+ENV DBG_CONTAINER_VER  "Dockerfile 2025.0821a sn50 skipDB"
 ENV DBG_DOCKERFILE Dockerfile
 
 RUN  cd / \
