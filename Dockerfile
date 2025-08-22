@@ -5,6 +5,17 @@ ENV DEBIAN_FRONTEND noninteractive
 
 ### RUN set -ex; \
 
+RUN echo  ''  ;\
+    touch _TOP_DIR_OF_CONTAINER_  ;\
+    echo  'debian_bullseye'                  | tee -a _TOP_DIR_OF_CONTAINER_ ;\
+    echo "begining docker build process at " | tee -a _TOP_DIR_OF_CONTAINER_  ;\
+    date | tee -a       _TOP_DIR_OF_CONTAINER_ ;\
+    export TERM=dumb      ;\
+    export NO_COLOR=TRUE  ;\
+    cd /     ;\
+    echo "" 
+
+
 RUN apt-get update -qq; \
     apt-get install -y -qq git \
     apt-utils \
@@ -28,6 +39,7 @@ RUN git clone --depth 1 https://bitbucket.org/genomicepidemiology/kma.git; \
 COPY cgMLST.py /usr/src/cgMLST.py
 
 RUN chmod 755 /usr/src/cgMLST.py;
+
 
 ENV PATH $PATH:/usr/src
 # Setup .bashrc file for convenience during debugging
