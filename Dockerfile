@@ -47,16 +47,17 @@ RUN chmod 755 /usr/src/cgMLST.py;
 
 #Sn50
 # install database , into the container, rather than rely on bind mount
+# not enought space in build env to build this container with the DB
 RUN mkdir -p /opt/database    ;\
     cd       /opt/database    ;\
     git clone https://bitbucket.org/genomicepidemiology/cgmlstfinder_db.git ;\
     cd / ;\
     ln -s /opt/database/cgmlstfinder_db /database ;\
     cd /database         ;\
-    python3 INSTALL.py   ;\
+    echo "skipped DB install python3 INSTALL.py"   ;\
     echo $?
 
-ENV DBG_CONTAINER_VER  "Dockerfile 2025.0821 sn50 with_six,DB"
+ENV DBG_CONTAINER_VER  "Dockerfile 2025.0821 sn50 skipDB"
 ENV DBG_DOCKERFILE Dockerfile
 
 RUN  cd / \
