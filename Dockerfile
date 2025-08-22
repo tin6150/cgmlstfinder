@@ -25,6 +25,7 @@ RUN apt-get update -qq; \
     python3-pip \
 	prodigal \
     libz-dev \
+    six \
     ; \
     rm -rf /var/cache/apt/* /var/lib/apt/lists/*;
 
@@ -43,8 +44,19 @@ COPY cgMLST.py /usr/src/cgMLST.py
 RUN chmod 755 /usr/src/cgMLST.py;
 
 
+
 #Sn50
-ENV DBG_CONTAINER_VER  "Dockerfile 2025.0821 sn50"
+# install database , into the container, rather than rely on bind mount
+RUN mkdir -p /opt/database    ;\
+    cd       /opt/database    ;\
+    git clone https://bitbucket.org/genomicepidemiology/cgmlstfinder_db.git ;\
+    cd / ;\
+    ln -s /opt/database/cgmlstfinder_db /database ;\
+    cd /database         ;\
+    python3 INSTALL.py   ;\
+    echo $?
+
+ENV DBG_CONTAINER_VER  "Dockerfile 2025.0821 sn50 with_six,DB"
 ENV DBG_DOCKERFILE Dockerfile
 
 RUN  cd / \

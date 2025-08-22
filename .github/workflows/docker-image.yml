@@ -1,10 +1,11 @@
+# job name is the name here, not the file name docker-image.yml
 name: Docker Image CI
 
 on:
   push:
-    branches: [ "master", "sn50" ]
+    branches: [ "DISABLED_master", "sn50" ]
   pull_request:
-    branches: [ "master", "sn50" ]
+    branches: [ "DISABLED_master", "sn50" ]
 
 jobs:
 
