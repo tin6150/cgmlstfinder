@@ -23,6 +23,7 @@ RUN apt-get update -qq; \
     apt-utils \
     wget \
     python3-pip \
+    python3-full \
     pipx \
     prodigal \
     phylip \
@@ -34,8 +35,8 @@ RUN apt-get update -qq; \
 ENV DEBIAN_FRONTEND Teletype
 
 # Install python dependencies
-RUN pipx install -U ete3 tabulate cgecore numpy;
-RUN pipx install -U six;
+RUN pipx install ete3 tabulate cgecore numpy;
+RUN pipx install six;
 # something changed between 2025.08.20-ish and 08.30
 # this bulid ok before, but now complain it is externally managed... and to use pipx 
 
