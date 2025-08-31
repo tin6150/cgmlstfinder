@@ -37,37 +37,6 @@ RUN apt-get update -qq; \
     ; \
     rm -rf /var/cache/apt/* /var/lib/apt/lists/*;
 
-ENV DEBIAN_FRONTEND Teletype
-
-# Install kma
-RUN git clone --depth 1 https://bitbucket.org/genomicepidemiology/kma.git; \
-    cd kma && make; \
-    mv kma* /bin/
-
-COPY cgMLST.py /usr/src/cgMLST.py
-
-RUN chmod 755 /usr/src/cgMLST.py;
-
-#Sn50 >>
-COPY make_nj_tree.py /usr/src/make_nj_tree.py   
-RUN  chmod 755       /usr/src/make_nj_tree.py;
-# hmm... cant just run out out of the git repo, cuz has pip dependencies for ete3, maybe other
-
-
-
-#Sn50
-# install database , into the container, rather than rely on bind mount
-# not enought space in build env to build this container with the DB
-RUN mkdir -p /opt/database    ;\
-    cd       /opt/database    ;\
-    git clone https://bitbucket.org/genomicepidemiology/cgmlstfinder_db.git ;\
-    cd / ;\
-    ln -s /opt/database/cgmlstfinder_db /database ;\
-    cd /database         ;\
-    export cgMLST_DB=$(pwd)           ;\
-    echo cgMLST_DB is set to $cgMLST_DB           | tee -a cgmlstfinder_db_install.TXT  ;\
-    echo "skipped DB install python3 INSTALL.py"  | tee -a cgmlstfinder_db_install.TXT  ;\
-    echo $?
 
 RUN echo ''  ;\
     echo '==================================================================' ;\
@@ -115,7 +84,47 @@ RUN echo  ''  ;\
     echo ""
 
 
-ENV DBG_CONTAINER_VER  "Dockerfile 2025.0830a sn50 skipDB gnu-which make_nj_tree.py phylip installer_script"
+
+ENV DEBIAN_FRONTEND Teletype
+
+# Install kma
+RUN git clone --depth 1 https://bitbucket.org/genomicepidemiology/kma.git; \
+    cd kma && make; \
+    mv kma* /bin/
+
+COPY cgMLST.py /usr/src/cgMLST.py
+
+RUN chmod 755 /usr/src/cgMLST.py;
+
+#Sn50 >>
+COPY make_nj_tree.py /usr/src/make_nj_tree.py   
+RUN  chmod 755       /usr/src/make_nj_tree.py;
+# cant just run out out of the git repo, cuz has pip dependencies for ete3, maybe other
+# but the venv req is making env setup inside container rather painful 
+# trying these hacks
+COPY make_nj_tree.py /opt/python_venv/make_nj_tree.py   
+RUN  chmod 755       /opt/python_venv/make_nj_tree.py 
+COPY cgMLST.py       /opt/python_venv/cgMLST.py
+RUN  chmod 755       /opt/python_venv/cgMLST.py
+
+
+
+#Sn50
+# install database , into the container, rather than rely on bind mount
+# not enought space in build env to build this container with the DB
+RUN mkdir -p /opt/database    ;\
+    cd       /opt/database    ;\
+    git clone https://bitbucket.org/genomicepidemiology/cgmlstfinder_db.git ;\
+    cd / ;\
+    ln -s /opt/database/cgmlstfinder_db /database ;\
+    cd /database         ;\
+    export cgMLST_DB=$(pwd)           ;\
+    echo cgMLST_DB is set to $cgMLST_DB           | tee -a cgmlstfinder_db_install.TXT  ;\
+    echo "skipped DB install python3 INSTALL.py"  | tee -a cgmlstfinder_db_install.TXT  ;\
+    echo $?
+
+
+ENV DBG_CONTAINER_VER  "Dockerfile 2025.0830b sn50 skipDB make_nj_tree.py phylip installer_script shuffel4pyEnvPita"
 ENV DBG_DOCKERFILE Dockerfile
 
 RUN  cd / \
@@ -126,9 +135,13 @@ RUN  cd / \
   && echo  $DBG_CONTAINER_VER   | tee -a  _TOP_DIR_OF_CONTAINER_   \
   && echo  "Grand Finale for Dockerfile"
 
+# uptime not found in builder env
 
 
 ENV PATH $PATH:/usr/src:/opt/python_venv/bin
+ENV PYTHONPATH $PYTHONPATH:/opt/python_venv/
+ENV VIRTUAL_ENV /opt/python_venv
+ENV VIRTUAL_ENV_PROMPT python_venv
 # Setup .bashrc file for convenience during debugging
 RUN echo "alias ls='ls -h --color=tty'\n"\
 "alias ll='ls -lrt'\n"\
@@ -140,5 +153,6 @@ RUN echo "alias ls='ls -h --color=tty'\n"\
 WORKDIR /workdir
 
 # Execute program when running the container
-ENTRYPOINT ["python3", "/usr/src/cgMLST.py"]
+#ENTRYPOINT ["python3", "/usr/src/cgMLST.py"]
+ENTRYPOINT ["/opt/python_venv/bin/python3", "/usr/src/cgMLST.py"]
 

@@ -24,7 +24,7 @@ export DEBIAN_FRONTEND=noninteractive
 #apt-get -y --quiet install beast2-mcmc beast2-mcmc-examples beast2-mcmc-doc beagle beagle-doc
 apt-get -y --quiet install python3-full python3-venv
 echo $?
-apt-get -y --quiet phylip
+apt-get -y --quiet install phylip  # also installed by Dockerfile 
 echo $?
 
 echo "pip stuff"
@@ -38,6 +38,12 @@ echo $?
 python3 -m pip install cgecore
 echo $?
 python3 -m pip install six
+echo $?
+
+# make_nj_tree.py need cgi
+python3 -m pip install pycgi
+echo $?
+python3 -m pip install legacy-cgi
 echo $?
 
 
