@@ -39,7 +39,7 @@ ENV DEBIAN_FRONTEND Teletype
 # Install python dependencies
 #RUN pip3 install  ete3 tabulate cgecore;
 #RUN pip3 install -U ete3 tabulate cgecore numpy;
-RUN pipx install ete3 tabulate;
+RUN python3 -m pip  install ete3 tabulate;
 RUN python3 -m pip  install --break-system-packages cgecore;
 RUN python3 -m pip  install --break-system-packages six;
 # something changed between 2025.08.20-ish and 08.30
@@ -92,7 +92,7 @@ RUN echo ''  ;\
 COPY .              /opt/gitrepo/container/
 #COPY Dockerfile*   /opt/gitrepo/container/
 
-ENV DBG_CONTAINER_VER  "Dockerfile 2025.0830a sn50 skipDB gnu-which make_nj_tree.py phylip ubnutn24"
+ENV DBG_CONTAINER_VER  "Dockerfile 2025.0830a sn50 skipDB gnu-which make_nj_tree.py phylip no_pipx"
 ENV DBG_DOCKERFILE Dockerfile
 
 RUN  cd / \
