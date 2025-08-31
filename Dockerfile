@@ -1,5 +1,8 @@
 ##FROM debian:stretch
-FROM debian:bullseye
+#FROM debian:bullseye # v11
+#FROM debian:bookworm # v12
+#FROM debian:trixie		# v13
+FROM debian:trixie
 ##FROM ubuntu:20.04
 
 ENV DEBIAN_FRONTEND noninteractive
