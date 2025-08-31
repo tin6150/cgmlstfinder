@@ -1,6 +1,6 @@
 ##FROM debian:stretch
 ##FROM debian:bullseye
-FROM ubuntu:24.04
+FROM ubuntu:20.04
 
 ENV DEBIAN_FRONTEND noninteractive
 
