@@ -1,6 +1,6 @@
 ##FROM debian:stretch
-##FROM debian:bullseye
-FROM ubuntu:20.04
+FROM debian:bullseye
+##FROM ubuntu:20.04
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -37,13 +37,14 @@ RUN apt-get update -qq; \
 ENV DEBIAN_FRONTEND Teletype
 
 # Install python dependencies
-RUN pip3 install  ete3 tabulate cgecore;
+#RUN pip3 install  ete3 tabulate cgecore;
 #RUN pip3 install -U ete3 tabulate cgecore numpy;
-#RUN pipx install ete3 tabulate;
-#RUN pipx install cgecore;
-#RUN pipx install six;
+RUN pipx install ete3 tabulate;
+RUN python3 -m pip  install --break-system-packages cgecore;
+RUN python3 -m pip  install --break-system-packages six;
 # something changed between 2025.08.20-ish and 08.30
 # this bulid ok before, but now complain it is externally managed... and to use pipx 
+# try forcing it.  it was just circumvent warnings.  it is a container, disposable.
 
 # Install kma
 RUN git clone --depth 1 https://bitbucket.org/genomicepidemiology/kma.git; \
