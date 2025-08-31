@@ -1,5 +1,6 @@
 ##FROM debian:stretch
-FROM debian:bullseye
+##FROM debian:bullseye
+FROM ubuntu:24.04
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -36,10 +37,11 @@ RUN apt-get update -qq; \
 ENV DEBIAN_FRONTEND Teletype
 
 # Install python dependencies
+RUN pip3 install -U ete3 tabulate cgecore;
 #RUN pip3 install -U ete3 tabulate cgecore numpy;
-RUN pipx install ete3 tabulate;
-RUN pipx install cgecore;
-RUN pipx install six;
+#RUN pipx install ete3 tabulate;
+#RUN pipx install cgecore;
+#RUN pipx install six;
 # something changed between 2025.08.20-ish and 08.30
 # this bulid ok before, but now complain it is externally managed... and to use pipx 
 
@@ -89,7 +91,7 @@ RUN echo ''  ;\
 COPY .              /opt/gitrepo/container/
 #COPY Dockerfile*   /opt/gitrepo/container/
 
-ENV DBG_CONTAINER_VER  "Dockerfile 2025.0830a sn50 skipDB gnu-which make_nj_tree.py phylip pipx"
+ENV DBG_CONTAINER_VER  "Dockerfile 2025.0830a sn50 skipDB gnu-which make_nj_tree.py phylip ubnutn24"
 ENV DBG_DOCKERFILE Dockerfile
 
 RUN  cd / \
