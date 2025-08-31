@@ -23,7 +23,9 @@ RUN apt-get update -qq; \
     apt-utils \
     wget \
     python3-pip \
-	prodigal \
+    pipx \
+    prodigal \
+    phylip \
     libz-dev \
     gnu-which \
     ; \
@@ -32,8 +34,10 @@ RUN apt-get update -qq; \
 ENV DEBIAN_FRONTEND Teletype
 
 # Install python dependencies
-RUN pip3 install -U ete3 tabulate cgecore numpy;
-RUN pip3 install -U six;
+RUN pipx install -U ete3 tabulate cgecore numpy;
+RUN pipx install -U six;
+# something changed between 2025.08.20-ish and 08.30
+# this bulid ok before, but now complain it is externally managed... and to use pipx 
 
 # Install kma
 RUN git clone --depth 1 https://bitbucket.org/genomicepidemiology/kma.git; \
@@ -65,7 +69,23 @@ RUN mkdir -p /opt/database    ;\
     echo "skipped DB install python3 INSTALL.py"  | tee -a cgmlstfinder_db_install.TXT  ;\
     echo $?
 
-ENV DBG_CONTAINER_VER  "Dockerfile 2025.0830  sn50 skipDB gnu-which make_nj_tree.py"
+RUN echo ''  ;\
+    echo '==================================================================' ;\
+    test -d /opt/gitrepo            || mkdir -p /opt/gitrepo             ;\
+    test -d /opt/gitrepo/container  || mkdir -p /opt/gitrepo/container   ;\
+    #the git command dont produce output, thought container run on the dir squatting on the git files.  COPY works... oh well
+    #git branch |tee /opt/gitrepo/container/git.branch.out.txt            ;\
+    #git log --oneline --graph --decorate | tee /opt/gitrepo/container/git.lol.out.txt       ;\
+    #--echo "--------" | tee -a _TOP_DIR_OF_CONTAINER_           ;\
+    #--echo "git cloning the repo for reference/tracking" | tee -a _TOP_DIR_OF_CONTAINER_ ;\
+    cd /     ;\
+    echo ""
+
+# add some marker of how Docker was build.
+COPY .              /opt/gitrepo/container/
+#COPY Dockerfile*   /opt/gitrepo/container/
+
+ENV DBG_CONTAINER_VER  "Dockerfile 2025.0830a sn50 skipDB gnu-which make_nj_tree.py phylip pipx"
 ENV DBG_DOCKERFILE Dockerfile
 
 RUN  cd / \
