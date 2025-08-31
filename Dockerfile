@@ -37,7 +37,7 @@ RUN apt-get update -qq; \
 ENV DEBIAN_FRONTEND Teletype
 
 # Install python dependencies
-RUN pip3 install -U ete3 tabulate cgecore;
+RUN pip3 install  ete3 tabulate cgecore;
 #RUN pip3 install -U ete3 tabulate cgecore numpy;
 #RUN pipx install ete3 tabulate;
 #RUN pipx install cgecore;
