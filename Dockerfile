@@ -25,6 +25,7 @@ RUN apt-get update -qq; \
     python3-pip \
 	prodigal \
     libz-dev \
+    gnu-which \
     ; \
     rm -rf /var/cache/apt/* /var/lib/apt/lists/*;
 
@@ -43,6 +44,11 @@ COPY cgMLST.py /usr/src/cgMLST.py
 
 RUN chmod 755 /usr/src/cgMLST.py;
 
+#Sn50 >>
+COPY make_nj_tree.py /usr/src/make_nj_tree.py   
+RUN  chmod 755       /usr/src/make_nj_tree.py;
+# hmm... cant just run out out of the git repo, cuz has pip dependencies for ete3, maybe other
+
 
 
 #Sn50
@@ -50,14 +56,16 @@ RUN chmod 755 /usr/src/cgMLST.py;
 # not enought space in build env to build this container with the DB
 RUN mkdir -p /opt/database    ;\
     cd       /opt/database    ;\
-    echo "skip also, install on host... git clone https://bitbucket.org/genomicepidemiology/cgmlstfinder_db.git" | tee git_cgmlstfinder_db.TXT ;\
-    #cd / ;\
-    #ln -s /opt/database/cgmlstfinder_db /database ;\
-    #cd /database         ;\
-    echo "skipped DB install python3 INSTALL.py"  | tee -a git_cgmlstfinder_db.TXT  ;\
+    git clone https://bitbucket.org/genomicepidemiology/cgmlstfinder_db.git ;\
+    cd / ;\
+    ln -s /opt/database/cgmlstfinder_db /database ;\
+    cd /database         ;\
+    export cgMLST_DB=$(pwd)           ;\
+    echo cgMLST_DB is set to $cgMLST_DB           | tee -a cgmlstfinder_db_install.TXT  ;\
+    echo "skipped DB install python3 INSTALL.py"  | tee -a cgmlstfinder_db_install.TXT  ;\
     echo $?
 
-ENV DBG_CONTAINER_VER  "Dockerfile 2025.0821a sn50 skipDB"
+ENV DBG_CONTAINER_VER  "Dockerfile 2025.0830  sn50 skipDB gnu-which make_nj_tree.py"
 ENV DBG_DOCKERFILE Dockerfile
 
 RUN  cd / \
