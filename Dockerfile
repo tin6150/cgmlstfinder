@@ -36,16 +36,6 @@ RUN apt-get update -qq; \
 
 ENV DEBIAN_FRONTEND Teletype
 
-# Install python dependencies
-#RUN pip3 install  ete3 tabulate cgecore;
-#RUN pip3 install -U ete3 tabulate cgecore numpy;
-RUN python3 -m pip  install ete3 tabulate;
-RUN python3 -m pip  install --break-system-packages cgecore;
-RUN python3 -m pip  install --break-system-packages six;
-# something changed between 2025.08.20-ish and 08.30
-# this bulid ok before, but now complain it is externally managed... and to use pipx 
-# try forcing it.  it was just circumvent warnings.  it is a container, disposable.
-
 # Install kma
 RUN git clone --depth 1 https://bitbucket.org/genomicepidemiology/kma.git; \
     cd kma && make; \
@@ -92,7 +82,37 @@ RUN echo ''  ;\
 COPY .              /opt/gitrepo/container/
 #COPY Dockerfile*   /opt/gitrepo/container/
 
-ENV DBG_CONTAINER_VER  "Dockerfile 2025.0830a sn50 skipDB gnu-which make_nj_tree.py phylip no_pipx"
+# Install python dependencies
+#RUN pip3 install  ete3 tabulate cgecore;
+#RUN pip3 install -U ete3 tabulate cgecore numpy;
+#RUN python3 -m pip  install ete3 tabulate;
+#RUN python3 -m pip  install --break-system-packages cgecore;
+#RUN python3 -m pip  install --break-system-packages six;
+# something changed between 2025.08.20-ish and 08.30
+# this bulid ok before, but now complain it is externally managed... and to use pipx 
+# try forcing it.  it was just circumvent warnings.  it is a container, disposable.
+#RUN install_pkg.sh
+
+RUN echo  ''  ;\
+    touch _TOP_DIR_OF_CONTAINER_  ;\
+    echo "continuing docker build process at " | tee -a _TOP_DIR_OF_CONTAINER_  ;\
+    date | tee -a       _TOP_DIR_OF_CONTAINER_ ;\
+    export TERM=dumb      ;\
+    export NO_COLOR=TRUE  ;\
+    cd /     ;\
+    echo ""  ;\
+    echo '==================================================================' ;\
+    echo " calling external shell script..." | tee -a _TOP_DIR_OF_CONTAINER_  ;\
+    echo " cd to /opt/gitrepo/container/"    | tee -a _TOP_DIR_OF_CONTAINER_  ;\
+    date | tee -a      _TOP_DIR_OF_CONTAINER_                                 ;\
+    echo '==================================================================' ;\
+    cd /opt/gitrepo/container     ;\
+    bash -x install_pkg.sh 2>&1 | tee install_pkg.LOG                         ;\
+    cd /    ;\
+    echo ""
+
+
+ENV DBG_CONTAINER_VER  "Dockerfile 2025.0830a sn50 skipDB gnu-which make_nj_tree.py phylip installer_script"
 ENV DBG_DOCKERFILE Dockerfile
 
 RUN  cd / \
@@ -105,7 +125,7 @@ RUN  cd / \
 
 
 
-ENV PATH $PATH:/usr/src
+ENV PATH $PATH:/usr/src:/opt/python_venv/bin
 # Setup .bashrc file for convenience during debugging
 RUN echo "alias ls='ls -h --color=tty'\n"\
 "alias ll='ls -lrt'\n"\
